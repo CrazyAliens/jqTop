@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>全屏滚动</title>
+<meta name="description" content="">
+<meta name="keywords" content="">
+<link href="" rel="stylesheet">
+<style type="text/css">
+	 *{ margin:0; padding:0; font-family:"Microsoft yahei",serif;}
+            li{ list-style-type: none;}
+
+            html,body{
+                height: 100%;
+            }
+            body{
+                width: 100%;
+                overflow: hidden;
+            }
+              #content{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+            }
+            #content div.conItem{
+                width: 100%;
+                height: 100%;
+                background-position: center center;
+                background-attachment: fixed;
+            }
+             #content div:nth-child(1){
+                background-image: url("img/1.jpg");
+            }
+            #content div:nth-child(2){
+                background-image: url("img/2.jpg");
+            }
+            #content div:nth-child(3){
+                background-image: url("img/3.jpg");
+            }
+            #content div:nth-child(4){
+                background-image: url("img/4.jpg");
+            }
+               #header{
+                position: fixed;
+                top: 25px;
+                left: 0;
+                z-index: 2;
+                width: 100%;
+                height: 47px;
+            }
+            #logo{
+                float: left;
+                width: 226px;
+                height: 47px;
+                margin-left: 50px;
+            }
+            #nav{
+                position: relative;
+                float: right;
+                width: 408px;
+                height: 47px;
+                margin-right: 50px;
+            }
+            #nav ul{
+                position: absolute;
+                z-index: 2;
+            }
+            #nav ul li{
+                float: left;
+                margin-left: 55px;
+                line-height: 47px;
+                font-size: 14px;
+            }
+            #nav ul li a{
+                color: rgba(255,255,255,.7);
+                text-decoration: none;
+                transition: .2s;
+            }
+            #nav ul li a:hover{
+                color: rgba(255,255,255,1);
+            }
+            #nav .border{
+                position: absolute;
+                top: 9px;
+                left: 39px;
+                width: 58px;
+                height: 28px;
+                border: 1px solid #fff;
+                border-radius: 15px;
+            }
+            #slideNav{
+                position: fixed;
+                top: 50%;
+                left: 50px;
+                z-index: 2;
+                margin-top: -150px;
+                width: 100px;
+                height: 350px;
+                background: url("img/nav.png") no-repeat;
+                padding-top: 6px
+            }
+            #slideNav ul li{
+                float: right;
+                width: 100%;
+                height: 21px;
+                line-height: 21px;
+                font-size: 12px;
+                text-align: right;
+                color: rgba(255,255,255,.8);;
+                margin-bottom: 56px;
+                cursor: pointer;
+            }
+            #slideNav ul li.on{
+                background: url("img/nav_cho.png") no-repeat;
+            }
+
+</style>
+</head>
+<body>
+    <header id="header">
+         <div id="logo">
+                <a href=""><img src="img/logo.png" alt=""></a>
+            </div>
+            <!-- 顶部导航栏 -->
+            <nav id="nav">
+                <ul>
+                    <li><a href="">首页</a></li>
+                    <li><a href="">常见问题</a></li>
+                    <li><a href="">论坛</a></li>
+                    <li><a href="">360首页&gt;&gt;</a></li>
+                </ul>
+                <div class="border"></div>
+            </nav>
+    </header>
+     <!--侧边导航-->
+        <nav id="slideNav">
+            <ul>
+                <li class="on">安全换机</li>
+                <li>无网对传</li>
+                <li>隐私粉碎</li>
+                <li>一键转移</li>
+            </ul>
+        </nav>
+    <!-- 内容 -->
+    <div id="content">
+    	<div class="conItem"></div>
+    	<div class="conItem"></div>
+    	<div class="conItem"></div>
+    	<div class="conItem"></div>
+    </div>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery-mousewheel/3.1.13/jquery.mousewheel.min.js"></script>
+    <script>
+        $(function () {
+            // 顶部导航栏滑动特效
+            (function () {
+                var $nav = $("#nav"),
+                        $li = $nav.find("ul li"),
+                        $border = $nav.find(".border"),
+                        sW = $border.width(),
+                        sL = $border.position().left,
+                        w = sW-$li.outerWidth(),
+                        l = sL - $li.position().left;
+                $li.mouseenter(function () {
+                    // body...
+                    var width = $(this).width()+w,
+                        left = $(this).position().left+l;
+                    $border.stop().animate({
+                        width : width ,
+                        left :left 
+                    })
+                })
+            })();
+            // 全屏滚动特效
+            // (function () {
+                
+            // })()
+            (function(){
+
+                    var $content = $("#content"),
+                        $slideLi = $("#slideNav").find("ul li"),
+                        index = 0,
+                        length = $content.children().length,
+                        winH = $(window).height(),
+                        lastTime = 0;
+
+                    $(window).resize(function () {
+                        winH = $(this).height();
+                        $content.css("top" , -index*winH+'px');
+                    });
+                    $(document).mousewheel(function (e,d) {
+                        if (new Date -lastTime<800) {return}
+                        if (d<0) {
+                            index++;
+                            index%=length;
+                        }
+                        else {
+                            index--;
+                            index<0?index=length:false;
+                        }
+                        change();
+                        lastTime=new Date;
+                    })
+                    $slideLi.click(function () {
+                        var x=$(this).index();
+                        if(x!==index){
+                            index=x;
+                            change()
+                        }
+                    })
+                    function change(){
+                        $slideLi.eq(index).addClass("on").siblings().removeClass("on");
+                        $content.stop().animate({
+                            top:-index*winH
+                        },800);
+                    }
+                })();
+        })
+    </script>
+</body>
+</html>

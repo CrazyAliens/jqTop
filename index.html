@@ -9,7 +9,7 @@
 <link href="" rel="stylesheet">
 <style type="text/css">
 	 *{ margin:0; padding:0; font-family:"Microsoft yahei",serif;}
-            li{ list-style-type: none;}
+     li{ list-style-type: none;}
 
             html,body{
                 height: 100%;
@@ -193,13 +193,14 @@
                     });
                     $(document).mousewheel(function (e,d) {
                         if (new Date -lastTime<800) {return}
+                        console.log(d)
                         if (d<0) {
                             index++;
                             index%=length;
                         }
                         else {
                             index--;
-                            index<0?index=length:false;
+                            index<=0?index=length-1:false;
                         }
                         change();
                         lastTime=new Date;
